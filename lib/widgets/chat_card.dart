@@ -63,9 +63,9 @@ class ChatCard extends StatefulWidget {
 class _ChatCardState extends State<ChatCard> {
   // Create an array of colors that you want to use for each card
   final List<Color> cardColors = [
-    Color(0xFFBDE0FE),
+    // Color(0xFFBDE0FE),
     Color(0xFFEDEDE9),
-    Color(0xFFCAF0F8), // Add the new colors to the list
+    // Color(0xFFCAF0F8), // Add the new colors to the list
     Color(0xFFD8F3DC),
   ];
 
@@ -80,6 +80,8 @@ class _ChatCardState extends State<ChatCard> {
         child: InkWell(
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen(user: widget.user,)));
+
+
           },
           child: ListTile(
             //User profile picture

@@ -103,4 +103,8 @@ class APIs {
     await firestore.collection('users')..doc(user.uid).update({'image':My_Info.image,'about':My_Info.about});
 
   }
+  
+  static Stream<QuerySnapshot<Map<String,dynamic>>> getAllMessages(){
+    return firestore.collection('messages').snapshots();
+  }
 }

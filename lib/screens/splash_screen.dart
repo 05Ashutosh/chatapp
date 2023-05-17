@@ -10,7 +10,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../auth/login_screen.dart';
 
-
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
@@ -24,25 +23,27 @@ class _SplashScreenState extends State<SplashScreen> {
     // TODO: implement initState
     super.initState();
 
-
-    Future.delayed(const  Duration(milliseconds: 4000),(){
-
+    Future.delayed(const Duration(milliseconds: 4000), () {
       //Exit to full screen
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        systemNavigationBarColor: Colors.white,
+        statusBarColor: Color.fromARGB(255, 148, 231, 225),
+      ));
 
-      if(APIs.auth.currentUser!=null){
+      if (APIs.auth.currentUser != null) {
         //if the user is already login
         log('User:${FirebaseAuth.instance.currentUser}');
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>const HomeScreen()));
-      }
-      else{
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+      } else {
         //navigate to home screen
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>const LoginScreen()));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (_) => const LoginScreen()));
       }
-
     });
   }
+
   @override
   Widget build(BuildContext context) {
     final sh = MediaQuery.of(context).size.height;
@@ -56,27 +57,39 @@ class _SplashScreenState extends State<SplashScreen> {
           // SizedBox(height: sh*0.1,),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [Image.asset(
-            'images/code.png',
-            height: 180,
-          ),],),
+            children: [
+              Image.asset(
+                'images/code.png',
+                height: 180,
+              ),
+            ],
+          ),
 
-          SizedBox(height: sh*0.2,),
-         Row(mainAxisAlignment: MainAxisAlignment.center,
-         children: [ RichText(
-             text: TextSpan(children: [
-               TextSpan(
-                   text: "Developed by",
-                   style: GoogleFonts.karla(
-                       textStyle: const TextStyle(fontSize: 16, color: Colors.black,fontWeight: FontWeight.w600))),
-               TextSpan(
-                   text: " Stingtalons",
-                   style: GoogleFonts.kalam(
-                       textStyle: const TextStyle(
-                           color: Colors.black,
-                           fontSize: 18,
-                           fontWeight: FontWeight.w700)))
-             ]))],)
+          SizedBox(
+            height: sh * 0.2,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              RichText(
+                  text: TextSpan(children: [
+                TextSpan(
+                    text: "Developed by",
+                    style: GoogleFonts.karla(
+                        textStyle: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600))),
+                TextSpan(
+                    text: " Stingtalons",
+                    style: GoogleFonts.kalam(
+                        textStyle: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700)))
+              ]))
+            ],
+          )
         ],
       ),
     );

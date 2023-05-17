@@ -36,6 +36,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _searchList.clear();
+  }
+
+  @override
   Widget build(BuildContext context) {
     //Global object for accessing device screen size
     mq = MediaQuery.of(context).size;
@@ -70,61 +77,53 @@ class _HomeScreenState extends State<HomeScreen> {
             centerTitle: false,
             title:
                 _isSearching
-                    ? Column(
-                      children: [
-                        SizedBox(height: 3,),
-                        Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 8,
-                            ),
-                            decoration: const BoxDecoration(
-                              // color: Color.fromARGB(255, 148, 231, 205),
-                              color: Colors.white,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(15),
-                                topRight: Radius.circular(15),
-                                bottomLeft: Radius.circular(15),
-                                bottomRight: Radius.circular(15),
-                              ),
-                            ),
-                            child: TextField(
-                              decoration: const InputDecoration(
-                                  border: InputBorder.none, hintText: "Name Email .."),
-                              cursorColor:  Color.fromARGB(255, 62, 182, 226),
-                              autofocus: true, //this will make sure that the cursor is there when we click the lens sign
-                              style: const TextStyle(fontSize: 17, letterSpacing: 0.5),
-                              onChanged: (val) {
-                                // search logic
-                                _searchList.clear();
-
-                                for (var i in _list) {
-                                  if (i.name
-                                          .toLowerCase()
-                                          .contains(val.toLowerCase()) ||
-                                      i.email
-                                          .toLowerCase()
-                                          .contains(val.toLowerCase())) {
-                                    _searchList.add(i);
-                                    // setState(() {
-                                    //   _searchList;
-                                    // }); more efficient
-                                  }
-                                }
-                                setState(() {
-                                  _searchList;
-                                });
-                              },
-                            ),
+                    ? Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                        ),
+                        decoration: const BoxDecoration(
+                          // color: Color.fromARGB(255, 148, 231, 205),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15),
+                            bottomLeft: Radius.circular(15),
+                            bottomRight: Radius.circular(15),
                           ),
-                        SizedBox(height: 3,),
-                      ],
-                    )
+                        ),
+                        child: TextField(
+                          decoration: const InputDecoration(
+                              border: InputBorder.none, hintText: "Name Email .."),
+                          cursorColor:  Color.fromARGB(255, 62, 182, 226),
+                          autofocus: true, //this will make sure that the cursor is there when we click the lens sign
+                          style: const TextStyle(fontSize: 17, letterSpacing: 0.5),
+                          onChanged: (val) {
+                            // search logic
+                            _searchList.clear();
 
-              : Text(
-                        " Giga Chad",
+                            for (var i in _list) {
+                              if (i.name
+                                      .toLowerCase()
+                                      .contains(val.toLowerCase()) ||
+                                  i.email
+                                      .toLowerCase()
+                                      .contains(val.toLowerCase())) {
+                                _searchList.add(i);
+                                // setState(() {
+                                //   _searchList;
+                                // }); more efficient
+                              }
+                            }
+                            setState(() {
+                              _searchList;
+                            });
+                          },
+                        ),
+                      )
+
+              : Text(" Fusion",
                         style: GoogleFonts.kalam(
-                            textStyle: TextStyle(
-
+                            textStyle:const TextStyle(
                                 fontSize: 26, fontWeight: FontWeight.w600)),
                       ),
 
@@ -221,6 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
 
 
 }

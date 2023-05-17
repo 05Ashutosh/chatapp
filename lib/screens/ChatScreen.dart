@@ -1,9 +1,13 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../API/apis.dart';
 import '../models/chat_user.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -17,31 +21,61 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
-    // SystemChrome.setSystemUIOverlayStyle(
-    //     const SystemUiOverlayStyle(statusBarColor:  Color.fromARGB(255, 148, 231, 225),
-    // ));
     // final Size si =MediaQuery.of(context).size;
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor:Color.fromARGB(255, 148, 231, 225), // Set the desired color here
-    ));
-
 
     return SafeArea(
       child: Scaffold(
         // backgroundColor:const Color.fromRGBO(66, 66,66, 1),
         // backgroundColor:  Color(0xFFCAF0F8),
-        backgroundColor: Colors.white,
+        // backgroundColor: Colors.white,
+        backgroundColor: Color.fromRGBO(240, 237, 227, 1),
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           // backgroundColor:const  Color.fromRGBO(48, 48, 48, 1),
           backgroundColor: Color.fromARGB(255, 148, 231, 225),
-
-          automaticallyImplyLeading: false,
           flexibleSpace: _appbar(),
         ),
         body: Column(
-         
           children: [
-            Expanded(child: Text("HI")),
+            Expanded(
+              child: StreamBuilder(
+                  stream: APIs.getAllMessages(), //we have to where we want to excess the data
+                  builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  // if data is loading
+                  case ConnectionState.waiting:
+                  case ConnectionState.none:
+                    return const Center(child: CircularProgressIndicator());
+                  //  if some or all data is loaded then show it
+                  case ConnectionState.active:
+                  case ConnectionState.done:
+                    final data = snapshot.data?.docs;
+                    log('${jsonEncode(data![0].data())}');
+                    // _list = data
+                    //     ?.map((e) => ChatUser.fromJson(e.data()))
+                    //     .toList() ??
+                    //     [];
+                    final _list =[];
+
+                    if (_list.isNotEmpty) {
+                      return ListView.builder(
+                          padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height * 0.01),
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: _list.length,
+                          itemBuilder: (context, index) {
+                            return Text("Message: ${_list[index]}");
+                          });
+                    } else {
+                      return const Center(
+                          child: Text(
+                        "Hi  👋",
+                        style: TextStyle(fontSize: 20),
+                      ));
+                    }
+                }
+              }),
+            ),
             _chatInput()
           ],
         ),
@@ -53,10 +87,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final Size si = MediaQuery.of(context).size;
 
     final Shader name_gra = const LinearGradient(
-      colors: <Color>[
-        Color(0xffDA44bb),
-        Color(0xff8921aa)
-      ],
+      colors: <Color>[Color(0xffDA44bb), Color(0xff8921aa)],
     ).createShader(const Rect.fromLTWH(0.0, 0.0, 200.0, 70.0));
 
     final Shader time_gra = const LinearGradient(
@@ -74,6 +105,7 @@ class _ChatScreenState extends State<ChatScreen> {
             },
             icon: const Icon(
               CupertinoIcons.back,
+              size: 35,
               color: Colors.white,
             )),
         ClipRRect(
@@ -99,7 +131,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         fontWeight: FontWeight.w700,
                         color: Colors.white
                         // foreground: Paint()..shader = name_gra
-                    ),
+                        ),
                   )),
               const SizedBox(
                 height: 2,
@@ -110,10 +142,17 @@ class _ChatScreenState extends State<ChatScreen> {
                     textStyle: const TextStyle(
                         fontWeight: FontWeight.w600,
                         // foreground: Paint()..shader = time_gra
-                        color: Colors.grey
-                    )),
+                        color: Colors.grey)),
               )
             ]),
+        const Expanded(child: Row()),
+        IconButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.email,
+              color: Colors.white,
+              size: 30,
+            ))
       ],
     );
   }
@@ -122,57 +161,62 @@ class _ChatScreenState extends State<ChatScreen> {
     return Padding(
       padding: EdgeInsets.symmetric(
           vertical: MediaQuery.of(context).size.height * 0.01,
-          horizontal: MediaQuery.of(context).size.width * 0.025),
+          horizontal: MediaQuery.of(context).size.width * 0.005),
       child: Row(
         children: [
           Expanded(
             child: Card(
               // color: const Color.fromRGBO(48, 48, 48, 1),
-              color:  Color(0xFFCAF0F8),
+              color: Color(0xFFCAF0F8),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30)),
               child: Row(
                 children: [
                   IconButton(
-                    splashColor: Colors.yellow,
+                      splashColor: Colors.yellow.shade50,
                       splashRadius: 23,
                       // highlightColor: Colors.transparent,
 
                       onPressed: () {},
                       icon: const Icon(
                         Icons.emoji_emotions_rounded,
-                        color: CupertinoColors.systemGrey2,
+                        color: CupertinoColors.white,
                         size: 26,
                       )),
-                  const  Expanded(
+                  const Expanded(
                       child: TextField(
-                        // keyboardType: TextInputType.multiline,
-                        // textInputAction: TextInputAction.done,
-                        style: TextStyle(color: Colors.white,),
+                    // keyboardType: TextInputType.multiline,
+                    // textInputAction: TextInputAction.done,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500),
 
-
-                        // maxLines: null,
-                        maxLines: 3,
-                        minLines: 1,
-                        decoration: InputDecoration(
+                    // maxLines: null,
+                    maxLines: 3,
+                    minLines: 1,
+                    decoration: InputDecoration(
                         hintText: "Message",
-                        hintStyle: TextStyle(fontSize: 20,color: Colors.grey),
+                        hintStyle: TextStyle(
+                            fontSize: 20,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w400),
                         border: InputBorder.none),
                     // cursorColor: Color.fromRGBO(0, 128, 105, 1),
-                        cursorColor:  Color.fromARGB(255, 62, 182, 226),
+                    cursorColor: Color.fromARGB(255, 62, 182, 226),
                   )),
                   IconButton(
                       onPressed: () {},
                       icon: const Icon(
                         Icons.image_outlined,
-                        color: CupertinoColors.systemGrey2,
+                        color: CupertinoColors.white,
                         size: 26,
                       )),
                   IconButton(
                       onPressed: () {},
                       icon: const Icon(
                         CupertinoIcons.camera_fill,
-                        color: CupertinoColors.systemGrey2,
+                        color: CupertinoColors.white,
                         size: 26,
                       ))
                 ],
@@ -191,9 +235,7 @@ class _ChatScreenState extends State<ChatScreen> {
               // color: const Color.fromRGBO(0, 128, 105, 1),
               // color: const Color.fromRGBO(100,254,218,1),
 
-
-              color: const Color.fromARGB(255, 62, 182, 226)
-              ,
+              color: const Color.fromARGB(255, 62, 182, 226),
               child: const Icon(
                 Icons.send_sharp,
                 color: Colors.white,
@@ -201,13 +243,15 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
           ),
-
           const SizedBox(
             width: 2,
           ),
-
         ],
       ),
     );
   }
 }
+
+// SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+// statusBarColor:Color.fromARGB(255, 148, 231, 225), // Set the desired color here
+// ));
